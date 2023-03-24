@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: fastapisvc
+spec:
+  selector:
+    app: fastapi
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  labels:
+    app: fastapi
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: ubuntu
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          resources:
+            # You must specify requests for CPU to autoscale
+            # based on CPU utilization
+            requests:
+              cpu: "250m"
+          command: ["/bin/sh"]
+          args:
+              - -c
+              - >-
+                  apt-get update &&
+                  apt-install git &&
+                  pip3 install fastapi uvicorn &&
+                  git clone https://github.com/DataScientest/kubernetes-devops-project &&
+                  cd kubernetes-devops-project &&
+                  pip3 install ./requirements.txt &&
+                  uvicorn service.main:app --host 0.0.0.0 --port 8080
