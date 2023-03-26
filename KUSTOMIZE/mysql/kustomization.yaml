@@ -1,0 +1,6 @@
+resources:
+- mySQL.yml
+- pv.yml
+- pvc.yml
+- secret.yml
+- serviceForMySQL.yml
