@@ -1,0 +1,13 @@
+apiVersion: {{ .Values.apiversion }}
+kind: Service
+metadata:
+  name: {{ .Values.fastapi.servicename }}
+  namespace : {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.fastapi.appname}}
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer

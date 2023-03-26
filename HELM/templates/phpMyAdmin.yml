@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.phpmyadmin.appname }}
+  namespace : {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.phpmyadmin.appname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.phpmyadmin.appname }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.phpmyadmin.appname }}
+    spec:
+      containers:
+        - name: {{ .Values.phpmyadmin.appname }}
+          image: phpmyadmin/phpmyadmin
+          ports:
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              value: app1.mpcloud.cloudns.ph
+            - name: PMA_PORT
+              value: "3306"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: password
